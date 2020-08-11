@@ -1,9 +1,10 @@
 docs = list()
+import pickle
 
 import os
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 data_dir = os.path.expanduser("cora")
 feature_names = ["w_{}".format(ii) for ii in range(1433)]
@@ -64,7 +65,9 @@ for doc in docs:
         score[j] = sum[j] / np_sum
     doc_scores.append(score)
 
-
+with open('cora.data', 'wb') as filehandle:
+    # store the data as binary data stream
+    pickle.dump(doc_scores, filehandle)
 no_top_words = 10
 # display_topics(lda, feature_names, no_top_words)
 

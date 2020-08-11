@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import pickle
 
 docs = list()
 for path, subdirs, files in os.walk("cit-HepTh-abstracts"):
@@ -61,5 +62,11 @@ for doc in docs:
     for j in range(0, no_topics):
         score[j] = sum[j] / np_sum
     doc_scores.append(score)
+
+with open('HepTh.data', 'wb') as filehandle:
+    # store the data as binary data stream
+    pickle.dump(doc_scores, filehandle)
+
+
 
 # display_topics(lda, tf_feature_names, no_top_words)
