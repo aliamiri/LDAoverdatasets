@@ -3,6 +3,7 @@ docs = list()
 import os
 
 import pandas as pd
+import numpy as np
 
 data_dir = os.path.expanduser("cora")
 feature_names = ["w_{}".format(ii) for ii in range(1433)]
@@ -21,11 +22,11 @@ for data in node_data.values:
 
 from sklearn.feature_extraction.text import CountVectorizer
 
-no_features = 1433
+no_features = 1436
 
 tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, max_features=no_features, stop_words='english')
 tf = tf_vectorizer.fit_transform(docs)
-# tf_feature_names = tf_vectorizer.get_feature_names()
+tf_feature_names = tf_vectorizer.get_feature_names()
 
 from sklearn.decomposition import LatentDirichletAllocation
 
@@ -47,6 +48,21 @@ def display_topics(model, feature_names, no_top_words):
         print("Topic %d:" % (topic_idx))
         print(" ".join([feature_names[i]
                         for i in topic.argsort()[:-no_top_words - 1:-1]]))
+
+
+doc_scores = list()
+for doc in docs:
+    score = np.zeros(no_topics)
+    sum = np.zeros(no_topics)
+    for w in range(0, len(tf_feature_names)):
+        if doc.__contains__(tf_feature_names[w]):
+            for j in range(0, no_topics):
+                sum[j] += lda.components_[j, w]
+
+    np_sum = np.sum(sum)
+    for j in range(0, no_topics):
+        score[j] = sum[j] / np_sum
+    doc_scores.append(score)
 
 
 no_top_words = 10

@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 docs = list()
 for path, subdirs, files in os.walk("cit-HepTh-abstracts"):
@@ -25,12 +26,11 @@ tf_feature_names = tf_vectorizer.get_feature_names()
 
 from sklearn.decomposition import LatentDirichletAllocation
 
-no_topics = 30
+no_topics = 8
 
 # Run LDA
 lda = LatentDirichletAllocation(n_components=no_topics, max_iter=5, learning_method='online', learning_offset=50.,
                                 random_state=0).fit(tf)
-
 
 perplexity = lda.perplexity(tf)
 
@@ -47,4 +47,19 @@ def display_topics(model, feature_names, no_top_words):
 
 
 no_top_words = 100
+
+doc_scores = list()
+for doc in docs:
+    score = np.zeros(no_topics)
+    sum = np.zeros(no_topics)
+    for w in range(0, len(tf_feature_names)):
+        if doc.__contains__(tf_feature_names[w]):
+            for j in range(0, no_topics):
+                sum[j] += lda.components_[j, w]
+
+    np_sum = np.sum(sum)
+    for j in range(0, no_topics):
+        score[j] = sum[j] / np_sum
+    doc_scores.append(score)
+
 # display_topics(lda, tf_feature_names, no_top_words)

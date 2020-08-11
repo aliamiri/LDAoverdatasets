@@ -5,10 +5,10 @@ import os
 import pandas as pd
 import numpy as np
 
-data_dir = os.path.expanduser("cora")
+data_dir = os.path.expanduser("citeseer")
 feature_names = ["w_{}".format(ii) for ii in range(1433)]
 column_names = feature_names + ["subject"]
-node_data = pd.read_csv(os.path.join(data_dir, "cora.content"), sep='\t', header=None, names=column_names)
+node_data = pd.read_csv(os.path.join(data_dir, "citeseer.content"), sep='\t', header=None, names=column_names)
 docs = list()
 
 for data in node_data.values:
